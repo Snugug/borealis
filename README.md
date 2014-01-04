@@ -1,5 +1,11 @@
-# eq.js
-### Element queries, fast and light
+# Borealis
+### [eq.js](https://github.com/Snugug/eq.js) based responsive images
+
+<hr>
+
+# README Not Available Yet
+
+<hr>
 
 Element queries are the "holy grail" of responsive web design, allowing you to create a single component that can be dropped into any position in any layout and have them respond appropriately. Unfortunately, due to some hard-to-deal-with chicken-and-egg cases, especially involving inline elements, it's unlikely that element queries will make it into browsers any time soon.
 
