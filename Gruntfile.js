@@ -18,7 +18,7 @@
       connect: {
         server: {
           options: {
-            port: 9009,
+            port: 9099,
             base: rootDir,
           }
         }
@@ -29,7 +29,7 @@
       //////////////////////////////
       watch: {
         options: {
-          livereload: 9011
+          livereload: 9091
         },
         html: {
           files: [
