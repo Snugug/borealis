@@ -1,21 +1,21 @@
 //////////////////////////////
 // eq.js
-// The global eqjs object that contains all eq.js functionality.
+// The global borealis object that contains all eq.js functionality.
 //
-// eqjs.nodes - List of all nodes to act upon when eqjs.states is called
-// eqjs.nodesLength - Number of nodes in eqjs.nodes
+// borealis.nodes - List of all nodes to act upon when borealis.states is called
+// borealis.nodesLength - Number of nodes in borealis.nodes
 //
-// eqjs.refreshNodes - Call this function to refresh the list of nodes that eq.js should act on
-// eqjs.sortObj - Sorts a key: value object based on value
-// eqjs.query - Runs through all nodes and finds their widths and points
-// eqjs.nodeWrites - Runs through all nodes and writes their eq status
+// borealis.refreshNodes - Call this function to refresh the list of nodes that eq.js should act on
+// borealis.sortObj - Sorts a key: value object based on value
+// borealis.query - Runs through all nodes and finds their widths and points
+// borealis.nodeWrites - Runs through all nodes and writes their eq status
 //////////////////////////////
-(function (eqjs, domready) {
+(function (borealis, domready) {
   'use strict';
 
-  function EQjs() {
+  function Borealis() {
     this.nodes = [];
-    this.eqsLength = 0;
+    this.brlLength = 0;
     this.widths = [];
     this.points = [];
     this.callback = undefined;
@@ -89,8 +89,8 @@
   //  nodes - optional, an array or NodeList of nodes to query
   //  callback - Either boolean (`true`/`false`) to force a normal callback, or a function to use as a callback once query and nodeWrites have finished.
   //////////////////////////////
-  EQjs.prototype.query = function (nodes, callback) {
-    var proto = Object.getPrototypeOf(eqjs);
+  Borealis.prototype.query = function (nodes, callback) {
+    var proto = Object.getPrototypeOf(borealis);
     var length;
 
     if (callback && typeof(callback) === 'function') {
@@ -109,7 +109,7 @@
     for (i = 0; i < length; i++) {
       widths.push(nodes[i].offsetWidth);
       try {
-        points.push(proto.sortObj(nodes[i].getAttribute('data-eq-pts')));
+        points.push(proto.sortObj(nodes[i].getAttribute('data-borealis-srcs')));
       }
       catch (e) {
         points.push({});
@@ -138,11 +138,11 @@
   //  widths - optional, widths of nodes to use. Only used if `nodes` is passed in
   //  points - optional, points of nodes to use. Only used if `nodes` is passed in
   //////////////////////////////
-  EQjs.prototype.nodeWrites = function (nodes) {
+  Borealis.prototype.nodeWrites = function (nodes) {
     var i,
     length,
     callback,
-    proto = Object.getPrototypeOf(eqjs),
+    proto = Object.getPrototypeOf(borealis),
     widths = proto.widths,
     points = proto.points;
 
@@ -158,37 +158,40 @@
       // Set object width to found width
       var objWidth = widths[i];
       var obj = nodes[i];
-      var eqPts = points[i];
+      var brlSrcs = points[i];
 
       // Get keys for states
-      var eqPtsLength = eqPts.length;
+      var brlSrcsLength = brlSrcs.length;
 
+      if (brlSrcsLength === 1) {
+        obj.setAttribute('src', brlSrcs[0].value);
+      }
       // Be greedy for smallest state
-      if (objWidth < eqPts[0].value) {
-        obj.removeAttribute('data-eq-state');
+      else if (objWidth < brlSrcs[1].key) {
+        obj.setAttribute('src', brlSrcs[0].value);
       }
       // Be greedy for largest state
-      else if (objWidth >= eqPts[eqPtsLength - 1].value) {
-        obj.setAttribute('data-eq-state', eqPts[eqPtsLength - 1].key);
+      else if (objWidth >= brlSrcs[brlSrcsLength - 1].key) {
+        obj.setAttribute('src', brlSrcs[brlSrcsLength - 1].value);
       }
       // Traverse the states if not found
       else {
-        for (var j = 0; j < eqPtsLength; j++) {
-          var current = eqPts[j];
-          var next = eqPts[j + 1];
+        for (var j = 0; j < brlSrcsLength; j++) {
+          var current = brlSrcs[j];
+          var next = brlSrcs[j + 1];
 
-          if (j === 0 && objWidth < current.value) {
-            obj.removeAttribute('data-eq-state');
+          if (j === 0 && objWidth < current.key) {
+            obj.setAttribute('src', brlSrcs[0].value);
             break;
           }
 
-          if (next.value === undefined) {
-            obj.setAttribute('data-eq-state', next.key);
+          if (next.key === undefined) {
+            obj.setAttribute('src', next.value);
             break;
           }
 
-          if (objWidth >= current.value && objWidth < next.value) {
-            obj.setAttribute('data-eq-state', current.key);
+          if (objWidth >= current.key && objWidth < next.key) {
+            obj.setAttribute('src', current.value);
             break;
           }
         }
@@ -199,17 +202,17 @@
     if (proto.callback) {
       callback = proto.callback;
       proto.callback = undefined;
-      callback();
+      callback(nodes);
     }
   };
 
   //////////////////////////////
   // Refresh Nodes
-  // Refreshes the list of nodes for eqjs to work with
+  // Refreshes the list of nodes for borealis to work with
   //////////////////////////////
-  EQjs.prototype.refreshNodes = function () {
-    var proto = Object.getPrototypeOf(eqjs);
-    proto.nodes = document.querySelectorAll('[data-eq-pts]');
+  Borealis.prototype.refreshNodes = function () {
+    var proto = Object.getPrototypeOf(borealis);
+    proto.nodes = document.querySelectorAll('[data-borealis-srcs]');
     proto.nodesLength = proto.nodes.length;
   };
 
@@ -217,27 +220,49 @@
   // Sort Object
   // Sorts a simple object (key: value) by value and returns a sorted object
   //////////////////////////////
-  EQjs.prototype.sortObj = function (obj) {
+  Borealis.prototype.sortObj = function (obj) {
     var arr = [];
 
     var objSplit = obj.split(',');
 
     for (var i = 0; i < objSplit.length; i++) {
-      var sSplit = objSplit[i].split(':');
-      arr.push({
-        'key': sSplit[0].replace(/^\s+|\s+$/g, ''),
-        'value': parseFloat(sSplit[1])
-      });
+      if (i === 0) {
+        arr.push({
+          'key': -1,
+          'value': objSplit[i]
+        });
+      }
+      else {
+        var sSplit = objSplit[i].replace(/:+/, '\x01').split('\x01');
+        arr.push({
+          'key': parseFloat(sSplit[0]),
+          'value': sSplit[1].replace(/^\s+|\s+$/g, '')
+        });
+      }
     }
 
     return arr.sort(function (a, b) { return a.value - b.value; });
   };
 
   //////////////////////////////
-  // We only ever want there to be
-  // one instance of EQjs in an app
+  // Style Images
+  // Adds styling to set up width and height appropriately
   //////////////////////////////
-  eqjs = eqjs || new EQjs();
+  Borealis.prototype.styleImages = function () {
+    var proto = Object.getPrototypeOf(borealis);
+    var nodeLength = proto.nodes.length;
+    console.log(nodeLength);
+    for (var i = 0; i < nodeLength; i++) {
+      proto.nodes[i].style.width = 100 + '%';
+      proto.nodes[i].style.height = 'auto';
+    }
+  };
+
+  //////////////////////////////
+  // We only ever want there to be
+  // one instance of Borealis in an app
+  //////////////////////////////
+  borealis = borealis || new Borealis();
 
   //////////////////////////////
   // Window Onload
@@ -246,14 +271,16 @@
   //////////////////////////////
   if (domready) {
     domready(function () {
-      eqjs.refreshNodes();
-      eqjs.query(undefined, true);
+      borealis.refreshNodes();
+      borealis.styleImages();
+      borealis.query(undefined, true);
     });
   }
   else {
     addEvent(window, 'DOMContentLoaded', function () {
-      eqjs.refreshNodes();
-      eqjs.query(undefined, true);
+      borealis.refreshNodes();
+      borealis.styleImages();
+      borealis.query(undefined, true);
     });
   }
 
@@ -263,18 +290,18 @@
   // Loop over each `eq-pts` element and pass to eqState
   //////////////////////////////
   addEvent(window, 'resize', function () {
-    eqjs.refreshNodes();
-    window.requestAnimationFrame(eqjs.query);
+    borealis.refreshNodes();
+    window.requestAnimationFrame(borealis.query);
   });
 
-  // Expose 'eqjs'
+  // Expose 'borealis'
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = eqjs;
+    module.exports = borealis;
   } else if (typeof define === 'function' && define.amd) {
     define(function () {
-      return eqjs;
+      return borealis;
     });
   } else {
-    window.eqjs = eqjs;
+    window.borealis = borealis;
   }
-})(window.eqjs, window.domready);
+})(window.borealis, window.domready);
