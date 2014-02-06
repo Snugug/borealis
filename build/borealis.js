@@ -248,13 +248,12 @@
   // Style Images
   // Adds styling to set up width and height appropriately
   //////////////////////////////
-  Borealis.prototype.styleImages = function () {
-    var proto = Object.getPrototypeOf(borealis);
-    var nodeLength = proto.nodes.length;
-    console.log(nodeLength);
+  Borealis.prototype.styleImages = function (nodes) {
+    nodes = nodes || Object.getPrototypeOf(borealis).nodes;
+    var nodeLength = nodes.length;
     for (var i = 0; i < nodeLength; i++) {
-      proto.nodes[i].style.width = 100 + '%';
-      proto.nodes[i].style.height = 'auto';
+      nodes[i].style.width = 100 + '%';
+      nodes[i].style.height = 'auto';
     }
   };
 
