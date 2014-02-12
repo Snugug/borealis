@@ -20,7 +20,7 @@ Then, add either `borealis.js` or `borealis.min.js` to your HTML, and you're rea
 In order to use **borealis**, you need to both include `borealis.js` on your site and set up the `data-borealis-srcs` attribute on your desired image. `data-borealis-srcs` needs to be written in `key: value` pairs separated by a comma `,`, with the key being the `min-width` pixel width when you would like to swap out an image and the value being the URL to the image. The first item in `data-borealis-srcs` should not have a key and will be the default. In order to prevent extra image requests, [do not include the `src` attribute](http://wilto.github.io/srcn-polyfills/) in the image definition.
 
 ```html
-<img data-eq-pts="/images/default.jpg, 300: /images/foo.jpg, 500: http://foo.com/bar.jpg, 900: http://qux.com/baz.jpg" alt="Responsive Images powered by Borealis!">
+<img data-borealis-srcs="/images/default.jpg, 300: /images/foo.jpg, 500: http://foo.com/bar.jpg, 900: http://qux.com/baz.jpg" alt="Responsive Images powered by Borealis!">
 ```
 
 When **borealis** has determined what size your image is, it will add the appropriate image URL to the image's `src` attribute. If the image is smaller than the smallest size, the default will be loaded in. If you did not write your sizes in order, fear not, they will be sorted for you.
