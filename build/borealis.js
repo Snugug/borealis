@@ -1,14 +1,14 @@
 //////////////////////////////
 // eq.js
-// The global borealis object that contains all eq.js functionality.
+// The global borealis object that contains all borealis functionality.
 //
 // borealis.nodes - List of all nodes to act upon when borealis.states is called
 // borealis.nodesLength - Number of nodes in borealis.nodes
 //
-// borealis.refreshNodes - Call this function to refresh the list of nodes that eq.js should act on
+// borealis.refreshNodes - Call this function to refresh the list of nodes that borealis should act on
 // borealis.sortObj - Sorts a key: value object based on value
 // borealis.query - Runs through all nodes and finds their widths and points
-// borealis.nodeWrites - Runs through all nodes and writes their eq status
+// borealis.nodeWrites - Runs through all nodes and writes their image source
 //////////////////////////////
 (function (borealis, domready) {
   'use strict';
