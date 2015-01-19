@@ -10,7 +10,7 @@
 // borealis.query - Runs through all nodes and finds their widths and points
 // borealis.nodeWrites - Runs through all nodes and writes their image source
 //////////////////////////////
-(function (borealis, domready) {
+(function (borealis) {
   'use strict';
 
   function Borealis() {
@@ -19,52 +19,6 @@
     this.widths = [];
     this.points = [];
     this.callback = undefined;
-  }
-
-  //////////////////////////////
-  // Object.getPrototypeOf Polyfill
-  // From http://stackoverflow.com/a/15851520/703084
-  //////////////////////////////
-  if (typeof Object.getPrototypeOf !== 'function') {
-    Object.getPrototypeOf = ''.__proto__ === String.prototype ? function (object) {
-      return object.__proto__;
-    }
-    : function (object) {
-      // May break if the constructor has been tampered with
-      return object.constructor.prototype;
-    };
-  }
-
-  //////////////////////////////
-  // Request Animation Frame Polyfill
-  //
-  // Written by  Erik Möller and Paul Irish
-  // From http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/
-  //////////////////////////////
-  var lastTime = 0;
-  var vendors = ['webkit', 'moz'];
-  for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-    window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-    window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-  }
-
-  if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = function (callback, element) {
-      element = element;
-      var currTime = new Date().getTime();
-      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-      var id = window.setTimeout(function () {
-        callback(currTime + timeToCall);
-      }, timeToCall);
-      lastTime = currTime + timeToCall;
-      return id;
-    };
-  }
-
-  if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = function (id) {
-      clearTimeout(id);
-    };
   }
 
   //////////////////////////////
@@ -268,20 +222,11 @@
   //
   // Fires on load
   //////////////////////////////
-  if (domready) {
-    domready(function () {
-      borealis.refreshNodes();
-      borealis.styleImages();
-      borealis.query(undefined, true);
-    });
-  }
-  else {
-    addEvent(window, 'DOMContentLoaded', function () {
-      borealis.refreshNodes();
-      borealis.styleImages();
-      borealis.query(undefined, true);
-    });
-  }
+  addEvent(window, 'DOMContentLoaded', function () {
+    borealis.refreshNodes();
+    borealis.styleImages();
+    borealis.query(undefined, true);
+  });
 
   //////////////////////////////
   // Window Resize
@@ -303,4 +248,4 @@
   } else {
     window.borealis = borealis;
   }
-})(window.borealis, window.domready);
+})(window.borealis);
