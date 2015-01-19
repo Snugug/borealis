@@ -33,7 +33,7 @@ In order to ensure that **borealis** is able to work its magic, when the DOM is 
 
 ## Browser Support
 
-**borealis** uses [`document.querySelectorAll()`](http://caniuse.com/queryselector) and provides polyfills for [`requestAnimationFrame()`](http://caniuse.com/requestanimationframe) and [`Object.getPrototypeOf`](http://stackoverflow.com/a/15851520/703084). It has been tested in the following browsers:
+**borealis** uses modern JavaScript, but can [supports older browsers as well](#a-note-on-ie8older-browser-support). It has been tested in the following browsers but is likely to support more:
 
 * IE8+
 * Firefox 3.5+
@@ -49,7 +49,15 @@ In order to ensure that **borealis** is able to work its magic, when the DOM is 
 * Firefox for Android
 * IE Mobile
 
-**Caveats**: On the current test site in IE8, the correct attributes get applied and the correct CSS gets applied (check in the developer tools, be sure to refresh the HTML after you've loaded the page or it'll appear as if they haven't!), but the correct paint doesn't get applied. I'm not entirely sure this is why, I guess this is due to the number of nodes, but really I've got no idea why it doesn't repaint properly.
+### A note on IE8/Older Browser Support
+
+There are three files provided: `borealis.min.js`, `borealis.polyfilled.min.js`, and `polyfills.js`. `borealis.polyfilled.min.js` includes the polyfills needed to run **borealis** in older browsers that are missing some newer JavaScript niceties (yes, this includes IE8+) and `polyfills.js` just includes the polyfills. While this allows for a drop-in solution using just what's provided here, a better solution (and where a bunch of the polyfills come from), consider using something like a [polyfill service](https://github.com/Financial-Times/polyfill-service) for a more robust and well-rounded solution.
+
+The specific polyfills included are as follows:
+
+* [`Object.getPrototypeOf`](http://kangax.github.io/compat-table/es5/#Object.getPrototypeOf)
+* [`window.requestAnimationFrame`](http://caniuse.com/#feat=requestanimationframe)
+* [`Event.DOMContentLoaded`](http://caniuse.com/#feat=domcontentloaded)
 
 ## Technical Mumbo Jumbo
 
